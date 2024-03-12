@@ -66,7 +66,7 @@ function UserHeader () {
           <Avatar
             name='Mark Zuckerberg'
             src='/avatar.png'
-            size='xl'
+            size={{ base: 'md', md: 'xl' }}
           />
         </Box>
       </Flex>
