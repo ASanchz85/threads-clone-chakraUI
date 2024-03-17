@@ -149,6 +149,7 @@ export default function SignupCard () {
                   bg: useColorModeValue('gray.600', 'gray.600')
                 }}
                 onClick={handleSignup}
+                onKeyDown={(e) => e.key === 'Enter' && handleSignup()}
               >
                 Sign up
               </Button>

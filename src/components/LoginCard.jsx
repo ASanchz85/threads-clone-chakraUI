@@ -19,7 +19,6 @@ import { useSetRecoilState } from 'recoil'
 import authScreenAtom from '../atoms/authAtom'
 import useShowToast from '../hooks/useShowToast'
 import setOptionsFetch from '../utils/setOptionsFetch'
-import { useNavigate } from 'react-router-dom'
 import userAtom from '../atoms/userAtom'
 
 const initialInputValues = {
@@ -33,7 +32,6 @@ export default function LoginCard () {
   const setAuthScreen = useSetRecoilState(authScreenAtom)
   const setUser = useSetRecoilState(userAtom)
   const showToast = useShowToast()
-  const navigate = useNavigate()
 
   const handleLogin = async () => {
     try {
@@ -50,7 +48,6 @@ export default function LoginCard () {
       showToast(null, 'You have been logged in.')
       window.localStorage.setItem('user-threads', JSON.stringify(userData))
       setUser(userData)
-      navigate('/' + userData.username)
     } catch (error) {
       showToast(error, 'An error occurred.')
     }
@@ -129,6 +126,7 @@ export default function LoginCard () {
                   bg: useColorModeValue('gray.600', 'gray.600')
                 }}
                 onClick={handleLogin}
+                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               >
                 Login
               </Button>
