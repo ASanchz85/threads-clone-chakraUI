@@ -20,6 +20,7 @@ import authScreenAtom from '../atoms/authAtom'
 import setOptionsFetch from '../utils/setOptionsFetch'
 import useShowToast from '../hooks/useShowToast'
 import { useNavigate } from 'react-router-dom'
+import userAtom from '../atoms/userAtom'
 
 const initialValueInput = {
   name: '',
@@ -32,6 +33,7 @@ export default function SignupCard () {
   const [showPassword, setShowPassword] = useState(false)
   const [inputValue, setInputValue] = useState(initialValueInput)
   const setAuthScreen = useSetRecoilState(authScreenAtom)
+  const setUser = useSetRecoilState(userAtom)
   const showToast = useShowToast()
   const navigate = useNavigate()
 
@@ -46,9 +48,11 @@ export default function SignupCard () {
         throw new Error(data.error)
       }
 
-      window.localStorage.setItem('user-threads', JSON.stringify(data))
+      const { data: userData } = data
+      window.localStorage.setItem('user-threads', JSON.stringify(userData))
+      setUser(userData)
       showToast(null, 'You have been signed up.')
-      navigate('/' + data.data.username)
+      navigate('/' + userData.username)
     } catch (error) {
       showToast(error, 'An error occurred.')
     }
