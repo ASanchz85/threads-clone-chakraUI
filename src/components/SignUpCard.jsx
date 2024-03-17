@@ -17,7 +17,9 @@ import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useSetRecoilState } from 'recoil'
 import authScreenAtom from '../atoms/authAtom'
-import { useFetch } from '../hooks/useFetch'
+import setOptionsFetch from '../utils/setOptionsFetch'
+import useShowToast from '../hooks/useShowToast'
+import { useNavigate } from 'react-router-dom'
 
 const initialValueInput = {
   name: '',
@@ -30,14 +32,26 @@ export default function SignupCard () {
   const [showPassword, setShowPassword] = useState(false)
   const [inputValue, setInputValue] = useState(initialValueInput)
   const setAuthScreen = useSetRecoilState(authScreenAtom)
-  // const options = {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(inputValue)
-  // }
-  // !const { data, error } = useFetch('/api/users/signup', options)
+  const showToast = useShowToast()
+  const navigate = useNavigate()
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
+    try {
+      const res = await fetch(
+        '/api/users/signup',
+        setOptionsFetch('POST', inputValue)
+      )
+      const data = await res.json()
+      if (data && data.error) {
+        throw new Error(data.error)
+      }
+
+      window.localStorage.setItem('user-threads', JSON.stringify(data))
+      showToast(null, 'You have been signed up.')
+      navigate('/' + data.data.username)
+    } catch (error) {
+      showToast(error, 'An error occurred.')
+    }
   }
 
   return (
